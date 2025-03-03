@@ -1,0 +1,32 @@
+networks:
+  ms-order-network:
+
+services:
+  postgres:
+    image: timescale/timescaledb-ha:pg16.4-ts2.17.1
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NAME: ${POSTGRES_NAME}
+    ports:
+      - '5432:5432'
+    user: root
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    networks:
+      - ms-order-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - ms-order-network
+
+volumes:
+  pgdata:

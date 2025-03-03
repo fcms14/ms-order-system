@@ -19,6 +19,96 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
+    "order-allocator": {
+      "type": "application",
+      "root": "apps/order-allocator",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-allocator/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-allocator/tsconfig.app.json"
+      }
+    },
+    "order-dispatcher": {
+      "type": "application",
+      "root": "apps/order-dispatcher",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-dispatcher/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-dispatcher/tsconfig.app.json"
+      }
+    },
+    "order-fiscal": {
+      "type": "application",
+      "root": "apps/order-fiscal",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-fiscal/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-fiscal/tsconfig.app.json"
+      }
+    },
+    "order-fraight": {
+      "type": "application",
+      "root": "apps/order-fraight",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-fraight/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-fraight/tsconfig.app.json"
+      }
+    },
+    "order-integrate": {
+      "type": "application",
+      "root": "apps/order-integrate",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-integrate/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-integrate/tsconfig.app.json"
+      }
+    },
+    "order-itinerary": {
+      "type": "application",
+      "root": "apps/order-itinerary",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-itinerary/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-itinerary/tsconfig.app.json"
+      }
+    },
+    "order-notifier": {
+      "type": "application",
+      "root": "apps/order-notifier",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-notifier/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-notifier/tsconfig.app.json"
+      }
+    },
+    "order-payment": {
+      "type": "application",
+      "root": "apps/order-payment",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-payment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-payment/tsconfig.app.json"
+      }
+    },
+    "order-printer": {
+      "type": "application",
+      "root": "apps/order-printer",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-printer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-printer/tsconfig.app.json"
+      }
+    },
+    "order-review": {
+      "type": "application",
+      "root": "apps/order-review",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-review/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-review/tsconfig.app.json"
+      }
+    },
     "order-stock": {
       "type": "application",
       "root": "apps/order-stock",
@@ -26,6 +116,15 @@
       "sourceRoot": "apps/order-stock/src",
       "compilerOptions": {
         "tsConfigPath": "apps/order-stock/tsconfig.app.json"
+      }
+    },
+    "order-tracker": {
+      "type": "application",
+      "root": "apps/order-tracker",
+      "entryFile": "main",
+      "sourceRoot": "apps/order-tracker/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order-tracker/tsconfig.app.json"
       }
     }
   }
