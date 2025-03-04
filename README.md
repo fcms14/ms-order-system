@@ -1,98 +1,263 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# 🏗️ Monorepositório NestJS com Microservices, RabbitMQ, TimescaleDB, Event-Driven, GraphQL Apollo Federation
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto segue uma **arquitetura de microsserviços**, utilizando:
 
-## Description
+- 🛠️ **NestJS** como framework principal
+- 🔌 **RabbitMQ** para comunicação assíncrona entre microsserviços.
+- 🗄️ **PostgreSQL** com TimescaleDB para persistência escalável.
+- 🚀 **GraphQL Apollo Federation** para unificação das APIs de múltiplos serviços.
+- 🔗 **Comunicação interna via TCP** entre microsserviços 
+- ⚡ **Docker** para facilitar a execução local e a infraestrutura. 
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 📖 Referências:
 
-## Project setup
+- [Documentação NestJS Workspaces](https://docs.nestjs.com/cli/monorepo#workspaces)
+- [NestJS Microservices](https://docs.nestjs.com/microservices/basics)
+- [RabbitMQ com NestJS](https://docs.nestjs.com/microservices/rabbitmq)
+
+
+## ⚡ Pré-requisitos
+
+Antes de começar, instale as dependências globais:
+
+```bash
+# Instalar o NestJS CLI, caso não tenha
+npm i -g @nestjs/cli
+```
+
+## 🏗️ Criar Monorepositório e Estruturar os Microsserviços com workspaces
+
+```bash
+# Criar o projeto principal
+nest new gateway
+
+# Entrar na pasta do projeto
+cd gateway
+
+# Criar os micro serviços
+nest generate app order-stock
+nest generate app order-payment
+nest generate app order-fraight
+nest generate app order-allocator
+nest generate app order-fiscal
+nest generate app order-dispatcher
+nest generate app order-printer
+nest generate app order-itinerary
+nest generate app order-tracker
+nest generate app order-notifier
+nest generate app order-review
+nest generate app order-integrate
+
+# Renomear o diretório principal
+cd ..
+mv gateway ms-order-system
+```
+
+Agora temos um monorepositório estruturado com NestJS Workspaces.
+
+## 🐳 Configurar Docker com PostgreSQL e RabbitMQ
+
+Crie um docker-compose.yml na raiz do projeto para rodar o PostgreSQL, RabbitMQ e TimescaleDB.
+
+📌 Crie e edite o arquivo docker-compose.yml:
+
+```bash
+networks:
+  ms-order-network:
+
+services:
+  postgres:
+    image: timescale/timescaledb-ha:pg16.4-ts2.17.1
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NAME: ${POSTGRES_NAME}
+    ports:
+      - '5432:5432'
+    user: root
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    networks:
+      - ms-order-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - ms-order-network
+
+volumes:
+  pgdata:
+```
+🚀 Suba os containers:
+
+```bash
+docker-compose up -d
+```
+
+## 🔗 Configurar Comunicação entre Microsserviços (HTTP, TCP e RabbitMQ)
+
+Instalar os pacotes necessários, conforme [Documentação MicroServices](https://docs.nestjs.com/microservices/basics) e [Documentação RabbitMQ](https://docs.nestjs.com/microservices/rabbitmq)
+
+```bash
+pnpm add @nestjs/microservices amqplib amqp-connection-manager @golevelup/nestjs-rabbitmq
+```
+
+## 📝 Configurando RabbitMQ Exchange - Fanout
+
+1️⃣ Importar RMQModule nos módulos publishers e consumers
+
+2️⃣ Utilizar o decorator @RabbitSubscribe no método de handle da mensagem, deve ser utilizado em uma classe injetavel
+
+3️⃣ Publicar eventos com amqpConnection
+
+✅ Isso permite comunicação eficiente entre microsserviços via TCP e RabbitMQ.
+
+
+## 🚀 Configurar o Gateway com GraphQL Apollo Federation
+
+Agora instalamos o Apollo Federation:
+
+```bash
+pnpm add @nestjs/graphql @nestjs/apollo graphql apollo-server-expres@apollo/gatewayay
+```
+
+### 📝 Configurar main.ts no Gateway
+
+📌 Edite o arquivo apps/gateway/src/main.ts:
+
+```bash
+import { NestFactory } from '@nestjs/core';
+import { GatewayModule } from './gateway.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(GatewayModule);
+  app.enableCors();
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+### 📝 Configurar gateway.module.ts para Apollo Federation + TCP
+
+📌 Edite o arquivo apps/gateway/src/gateway.module.ts para suportar GraphQL Federation + TCP:
+
+```bash
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { GatewayController } from './gateway.controller';
+
+@Module({
+  imports: [
+    GraphQLModule.forRoot<ApolloGatewayDriverConfig>({
+      driver: ApolloGatewayDriver,
+      gateway: {
+        supergraphSdl: new IntrospectAndCompose({
+          subgraphs: [
+            { name: 'order-stock', url: 'http://localhost:3011/graphql' },
+          ],
+        }),
+      },
+    }),
+    ClientsModule.register([
+      {
+        name: 'ORDER_STOCK_SERVICE',
+        transport: Transport.TCP,
+        options: { host: 'localhost', port: 3021 }, // Porta do TCP
+      },
+    ]),
+  ],
+  controllers: [GatewayController],
+})
+export class GatewayModule {}
+```
+
+✅ Agora, o Apollo Federation une os microsserviços via HTTP, e o TCP permite comunicação direta.
+
+## 📡 Configurar um Microsserviço com GraphQL + TCP (order-stock)
+
+### 📝 Configurar order-stock.module.ts
+
+📌 Edite apps/order-stock/src/order-stock.module.ts:
+
+```bash
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
+import { OrdersStockResolver } from './order-stock.resolver';
+import { OrderStockService } from './order-stock.service';
+
+@Module({
+  imports: [
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: { federation: 2 },
+    }),
+  ],
+  providers: [OrdersStockResolver, OrderStockService],
+})
+export class OrderStockModule {}
+```
+
+### 📝 Configurar main.ts para rodar GraphQL + TCP
+
+📌 Edite apps/order-stock/src/main.ts:
+
+```bash
+import { NestFactory } from '@nestjs/core';
+import { OrderStockModule } from './order-stock.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
+async function bootstrap() {
+  const app = await NestFactory.create(OrderStockModule);
+  app.enableCors();
+  await app.listen(3011);
+
+  const microservice = await NestFactory.createMicroservice<MicroserviceOptions>(
+    OrderStockModule,
+    {
+      transport: Transport.TCP,
+      options: { host: 'localhost', port: 3021 },
+    },
+  );
+
+  await microservice.listen();
+  console.log('✅ OrderStock rodando como Federation (3011) e TCP (3021)');
+}
+
+bootstrap();
+```
+
+✅ Agora o order-stock suporta GraphQL via HTTP e TCP para comunicação interna.
+
+Implemente o Resolver, a Model e a Service do microserviço. 
+* A model deve ter um decorator @Directive, informando key e tag. Isto é um requisito para funcionar como subgraphs.
+
+## 🎯 Testando a Configuração
+
+📌 Rodar todos os microsserviços simultaneamente:
 
 ```bash
 $ pnpm install
 ```
 
-## Compile and run the project
-
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm run start:all
 ```
 
-## Run tests
+📌 Testar se o Gateway GraphQL está funcionando:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+curl http://localhost:3000/graphql
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+#### 🎉🚀 Sua arquitetura NestJS suporta RabbitMQ, TimescaleDB, eventos assíncronos, GraphQL Apollo Federation e TCP! 🎉🚀
