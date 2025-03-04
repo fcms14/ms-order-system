@@ -24,6 +24,7 @@
     "@apollo/gateway": "^2.10.0",
     "@apollo/server": "^4.11.3",
     "@apollo/subgraph": "^2.10.0",
+    "@golevelup/nestjs-rabbitmq": "5.7.0",
     "@nestjs/apollo": "^13.0.3",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
@@ -82,7 +83,11 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/rmq(|/.*)$": "<rootDir>/libs/rmq/src/$1"
+    }
   }
 }

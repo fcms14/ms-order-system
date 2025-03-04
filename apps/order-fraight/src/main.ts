@@ -11,5 +11,7 @@ async function bootstrap() {
     },
   );
   await app.listen();
+
+  console.log('✅ OrderFraight rodando como Federation (3004)');
 }
 bootstrap();

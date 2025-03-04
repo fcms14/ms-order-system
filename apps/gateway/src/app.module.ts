@@ -5,9 +5,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { IntrospectAndCompose } from '@apollo/gateway';
+import { RMQModule } from '@app/rmq';
 
 @Module({
   imports: [
+    RMQModule,
     ClientsModule.register([
       {
         name: 'ORDER_FRAIGHT_SERVICE',
@@ -25,13 +27,6 @@ import { IntrospectAndCompose } from '@apollo/gateway';
         }),
       },
     }),
-    // ClientsModule.register([
-    //   {
-    //     name: 'ORDER_STOCK_SERVICE',
-    //     transport: Transport.TCP,
-    //     options: { host: 'localhost', port: 3011 },
-    //   },
-    // ]),
   ],
   controllers: [AppController],
   providers: [AppService],
