@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { OrderStock } from './order-stock.model';
 
 @Injectable()
 export class OrderStockService {
-  getHello(): string {
-    return 'Hello World!';
+  find(id: number): OrderStock {
+    return {
+      productId: id,
+      available: 10
+    };
   }
 }
