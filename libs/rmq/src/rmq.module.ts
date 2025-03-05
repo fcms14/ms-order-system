@@ -1,13 +1,12 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
-
-export const ORDER_EXCHANGE_NAME = 'order-events-exchange';
-export const ORDER_ROUTING_KEY = 'order-created';
+import { env } from '@app/env';
+import { ORDER_EXCHANGE_NAME } from './rmq.events';
 
 @Module({
   imports: [
     RabbitMQModule.forRoot({
-      uri: 'amqp://localhost:5672',
+      uri: env.RABBITMQ_URI,
       exchanges: [
         {
           name: ORDER_EXCHANGE_NAME,

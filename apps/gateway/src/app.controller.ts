@@ -3,7 +3,8 @@ import { AppService } from './app.service';
 import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { ORDER_EXCHANGE_NAME, ORDER_ROUTING_KEY } from '@app/rmq';
+import { ORDER_CREATED, ORDER_EXCHANGE_NAME } from '@app/rmq';
+
 
 @Controller('fraight')
 export class AppController {
@@ -17,7 +18,7 @@ export class AppController {
   testRmq(): { message: string, order: { orderId: number } } {
     const orderEvent = { orderId: Math.floor(Math.random() * 1000) };
 
-    this.amqpConnection.publish(ORDER_EXCHANGE_NAME, ORDER_ROUTING_KEY, orderEvent);
+    this.amqpConnection.publish(ORDER_EXCHANGE_NAME, ORDER_CREATED, orderEvent);
 
     return { message: 'Order event published', order: orderEvent };
   }

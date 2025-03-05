@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { IntrospectAndCompose } from '@apollo/gateway';
 import { RMQModule } from '@app/rmq';
+import { env } from '@app/env';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { RMQModule } from '@app/rmq';
       {
         name: 'ORDER_FRAIGHT_SERVICE',
         transport: Transport.TCP,
-        options: { host: 'localhost', port: 3004 },
+        options: { host: 'order-fraight', port: env.ORDER_FRAIGHT_TCP_PORT },
       },
     ]),
     GraphQLModule.forRoot<ApolloGatewayDriverConfig>({
@@ -22,7 +23,7 @@ import { RMQModule } from '@app/rmq';
       gateway: {
         supergraphSdl: new IntrospectAndCompose({
           subgraphs: [
-            { name: 'order-stock', url: 'http://localhost:3011/graphql' },
+            { name: 'order-stock', url: `http://order-stock:${env.ORDER_STOCK_HTTP_PORT}/graphql` },
           ],
         }),
       },

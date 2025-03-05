@@ -1,17 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { OrderFraightModule } from './order-fraight.module';
+import { env } from '@app/env';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     OrderFraightModule,
     {
       transport: Transport.TCP,
-      options: { host: 'localhost', port: 3004 },
+      options: { host: 'order-fraight', port: env.ORDER_FRAIGHT_TCP_PORT },
     },
   );
   await app.listen();
-
-  console.log('✅ OrderFraight rodando como Federation (3004)');
 }
 bootstrap();

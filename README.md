@@ -9,6 +9,7 @@ Este projeto segue uma **arquitetura de microsserviços**, utilizando:
 - 🚀 **GraphQL Apollo Federation** para unificação das APIs de múltiplos serviços.
 - 🔗 **Comunicação interna via TCP** entre microsserviços 
 - ⚡ **Docker** para facilitar a execução local e a infraestrutura. 
+- 🛠️ **Zod** para validação de variáveis de ambiente
 
 ### 📖 Referências:
 
@@ -56,6 +57,20 @@ mv gateway ms-order-system
 
 Agora temos um monorepositório estruturado com NestJS Workspaces.
 
+## 🛠️ Centralizando e Validando Variáveis de Ambiente com Zod
+
+1️⃣ As variáveis de ambiente são validadas e centralizadas em uma única biblioteca (@app/env).
+
+2️⃣ Ao criar novas variáveis de ambiente, adicione ao arquivo: libs/env/src/lib/env.ts com a validação necessária.
+
+🚀 Qualquer microserviço pode acessar as variáveis validadas importando @app/env:
+
+```bash
+import { env } from '@app/env';
+
+console.log("🚀 RabbitMQ conectado em:", env.RABBITMQ_URI);
+```
+
 ## 🐳 Configurar Docker com PostgreSQL e RabbitMQ
 
 Crie um docker-compose.yml na raiz do projeto para rodar o PostgreSQL, RabbitMQ e TimescaleDB.
@@ -96,6 +111,7 @@ services:
 volumes:
   pgdata:
 ```
+
 🚀 Suba os containers:
 
 ```bash
@@ -261,3 +277,27 @@ curl http://localhost:3000/graphql
 ```
 
 #### 🎉🚀 Sua arquitetura NestJS suporta RabbitMQ, TimescaleDB, eventos assíncronos, GraphQL Apollo Federation e TCP! 🎉🚀
+
+
+## 📢 Lista de Eventos Possíveis
+Aqui está a lista de eventos que podem ser emitidos e consumidos pelos microsserviços:
+
+### 📢 Eventos Relacionados a Pedidos
+* **order_created** - Pedido foi criado e aguarda processamento.
+* **order_stock_reserved** - O estoque foi reservado com sucesso.
+* **order_stock_failed** - Falha na reserva de estoque (estoque insuficiente).
+* **order_fraight_calculated** - O frete foi calculado com sucesso.
+* **order_fraight_failed** - Falha no cálculo do frete.
+* **order_new** - Pedido pronto para pagamento.
+* **order_payment_pending** - Aguardando confirmação do pagamento.
+* **order_payment_failed** - Falha na validação do pagamento.
+* **order_paid** - Pagamento aprovado, pedido confirmado.
+* **order_failed_payment** - Pagamento rejeitado, estoque será liberado.
+* **order_refunded** - Valor do pagamento estornado.
+* **order_printed** - Pedido impresso para produção.
+* **order_issued** - Nota fiscal emitida com sucesso.
+* **order_allocated** - Pedido foi alocado para um motorista.
+* **order_ready** - Pedido finalizado e pronto para despacho.
+* **order_dispatched** - Pedido saiu para entrega.
+* **order_delivered** - Pedido foi entregue ao cliente.
+* **order_review_requested** - Cliente recebeu notificação para avaliar a entrega.

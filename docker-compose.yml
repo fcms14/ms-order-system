@@ -1,6 +1,7 @@
 networks:
   ms-order-network:
 
+
 services:
   postgres:
     image: timescale/timescaledb-ha:pg16.4-ts2.17.1
@@ -27,6 +28,287 @@ services:
       - "15672:15672"
     networks:
       - ms-order-network
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  order-allocator:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_allocator
+    working_dir: /app
+    command: pnpm run start:dev:docker order-allocator
+    ports:
+      - '${ORDER_ALLOCATOR_HTTP_PORT}:${ORDER_ALLOCATOR_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [allocator]
+
+  order-dispatcher:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_dispatcher
+    working_dir: /app
+    command: pnpm run start:dev:docker order-dispatcher
+    ports:
+      - '${ORDER_DISPATCHER_HTTP_PORT}:${ORDER_DISPATCHER_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [dispatcher]
+
+  order-fiscal:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_fiscal
+    working_dir: /app
+    command: pnpm run start:dev:docker order-fiscal
+    ports:
+      - '${ORDER_FISCAL_HTTP_PORT}:${ORDER_FISCAL_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [fiscal]
+
+  order-fraight:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_fraight
+    working_dir: /app
+    command: pnpm run start:dev:docker order-fraight
+    ports:
+      - '${ORDER_FRAIGHT_HTTP_PORT}:${ORDER_FRAIGHT_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [fraight]
+
+  order-integrate:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_integrate
+    working_dir: /app
+    command: pnpm run start:dev:docker order-integrate
+    ports:
+      - '${ORDER_INTEGRATE_HTTP_PORT}:${ORDER_INTEGRATE_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [integrate]
+
+  order-itinerary:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_itinerary
+    working_dir: /app
+    command: pnpm run start:dev:docker order-itinerary
+    ports:
+      - '${ORDER_ITINERARY_HTTP_PORT}:${ORDER_ITINERARY_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [itinerary]
+
+  order-notifier:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_notifier
+    working_dir: /app
+    command: pnpm run start:dev:docker order-notifier
+    ports:
+      - '${ORDER_NOTIFIER_HTTP_PORT}:${ORDER_NOTIFIER_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [notifier]
+
+  order-payment:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_payment
+    working_dir: /app
+    command: pnpm run start:dev:docker order-payment
+    ports:
+      - '${ORDER_PAYMENT_HTTP_PORT}:${ORDER_PAYMENT_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [payment]
+
+  order-printer:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_printer
+    working_dir: /app
+    command: pnpm run start:dev:docker order-printer
+    ports:
+      - '${ORDER_PRINTER_HTTP_PORT}:${ORDER_PRINTER_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [printer]
+
+  order-review:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_review
+    working_dir: /app
+    command: pnpm run start:dev:docker order-review
+    ports:
+      - '${ORDER_REVIEW_HTTP_PORT}:${ORDER_REVIEW_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [review]
+
+  order-stock:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_stock
+    working_dir: /app
+    command: pnpm run start:dev:docker order-stock
+    ports:
+      - '${ORDER_STOCK_HTTP_PORT}:${ORDER_STOCK_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [stock]
+
+  order-tracker:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: order_tracker
+    working_dir: /app
+    command: pnpm run start:dev:docker order-tracker
+    ports:
+      - '${ORDER_TRACKER_HTTP_PORT}:${ORDER_TRACKER_HTTP_PORT}'
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+      postgres:
+        condition: service_started
+    # profiles: [tracker]
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.local
+    container_name: gateway
+    working_dir: /app
+    command: pnpm run start:dev:docker gateway
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    networks:
+      - ms-order-network
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      postgres:
+        condition: service_started
+      order-stock:
+        condition: service_started
+      order-fraight:
+        condition: service_started
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
 
 volumes:
   pgdata:
