@@ -1,6 +1,9 @@
-import { Args, Int, Query, Resolver, ResolveReference } from "@nestjs/graphql";
-import { OrderStock } from "./order-stock.model";
+import { Args, Mutation, Query, Resolver, ResolveReference, } from "@nestjs/graphql";
+import { OrderStock } from "./entity/order-stock.entity";
 import { OrderStockService } from "./order-stock.service";
+import { Post } from "@nestjs/common";
+import { OrderStockCreate } from "./dtos/order-stock-create";
+import { OrderStockUpdate } from "./dtos/order-stock-update";
 
 @Resolver(() => OrderStock)
 export class OrdersStockResolver {
@@ -9,12 +12,22 @@ export class OrdersStockResolver {
   ) { }
 
   @Query(() => OrderStock)
-  async author(@Args('productId', { type: () => Int }) productId: number): Promise<OrderStock> {
-    return await this.orderStockService.find(productId);
+  async orderStock(@Args('id', { type: () => String }) id: string): Promise<OrderStock | null> {
+    return await this.orderStockService.findOne(id);
+  }
+
+  @Mutation(() => OrderStock)
+  async createOrderStock(@Args('data') data: OrderStockCreate): Promise<OrderStock> {
+    return await this.orderStockService.create(data);
+  }
+
+  @Mutation(() => OrderStock)
+  async updateOrderStock(@Args('data') data: OrderStockUpdate): Promise<OrderStock | null> {
+    return await this.orderStockService.update(data);
   }
 
   @ResolveReference()
-  resolveReference(reference: { __typename: string; id: number }): OrderStock {
-    return this.orderStockService.find(reference.id);
+  async resolveReference(reference: { __typename: string; id: string }): Promise<OrderStock | null> {
+    return await this.orderStockService.findOne(reference.id);
   }
 }

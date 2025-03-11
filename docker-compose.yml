@@ -1,7 +1,6 @@
 networks:
   ms-order-network:
 
-
 services:
   postgres:
     image: timescale/timescaledb-ha:pg16.4-ts2.17.1
@@ -12,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_NAME: ${POSTGRES_NAME}
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     user: root
     volumes:
       - pgdata:/var/lib/postgresql/data/

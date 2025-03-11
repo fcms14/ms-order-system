@@ -4,9 +4,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const envSchema = z.object({
-    POSTGRES_NAME: z.string().nonempty({ message: 'POSTGRES_NAME is required' }),
+    POSTGRES_HOST: z.string().nonempty({ message: 'POSTGRES_HOST is required' }),
+    POSTGRES_PORT: z.preprocess((val) => Number(val), z.number().default(5432)),
     POSTGRES_USERNAME: z.string().nonempty({ message: 'POSTGRES_USERNAME is required' }),
     POSTGRES_PASSWORD: z.string().nonempty({ message: 'POSTGRES_PASSWORD is required' }),
+    POSTGRES_NAME: z.string().nonempty({ message: 'POSTGRES_NAME is required' }),
 
     RABBITMQ_URI: z.string().nonempty({ message: 'RABBITMQ_URI is required' }),
 
