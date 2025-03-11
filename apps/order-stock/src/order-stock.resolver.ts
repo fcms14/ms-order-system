@@ -31,3 +31,31 @@ export class OrdersStockResolver {
     return await this.orderStockService.findOne(reference.id);
   }
 }
+
+// # Write your query or mutation here
+// query {
+//   author(id: "1") {
+//     id
+//     product
+//     quantity
+//     created_at
+//     updated_at
+//     deleted_at
+//     __typename
+//   }
+// }
+
+// mutation {
+//   upsertOrderStock(data: {
+//     id: "123",
+//     product: "Laptop",
+//     quantity: 50
+//   }) {
+//     id
+//     product
+//     quantity
+//     created_at
+//     updated_at
+//   }
+// }
+// # Write your query or mutation here

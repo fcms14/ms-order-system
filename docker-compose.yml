@@ -309,5 +309,25 @@ services:
         condition: service_healthy
         restart: true
 
+  order-logger-go:
+    build:
+      context: ./apps/order-audit-go
+      dockerfile: DockerFile
+    container_name: order-audit-go
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+    networks:
+      - ms-order-network
+    depends_on:
+      postgres:
+        condition: service_started
+      order-stock:
+        condition: service_started
+      order-fraight:
+        condition: service_started
+      rabbitmq: 
+        condition: service_healthy
+        restart: true
+
 volumes:
   pgdata:
