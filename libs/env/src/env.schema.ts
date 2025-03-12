@@ -38,6 +38,8 @@ export const envSchema = z.object({
     ORDER_STOCK_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3111)),
     ORDER_TRACKER_HTTP_PORT: z.preprocess((val) => Number(val), z.number().default(3012)),
     ORDER_TRACKER_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3112)),
+
+    ORDER_STOCK_DATABASE: z.string().nonempty({ message: 'ORDER_STOCK_DATABASE is required' }),
 });
 
 export const env = envSchema.parse(process.env);

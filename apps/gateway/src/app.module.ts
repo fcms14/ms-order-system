@@ -23,7 +23,7 @@ import { env } from '@app/env';
       gateway: {
         supergraphSdl: new IntrospectAndCompose({
           subgraphs: [
-            { name: 'order-stock', url: `http://order-stock:${env.ORDER_STOCK_HTTP_PORT}/graphql` },
+            { name: env.ORDER_STOCK_DATABASE, url: `http://order-stock:${env.ORDER_STOCK_HTTP_PORT}/graphql` },
           ],
         }),
       },

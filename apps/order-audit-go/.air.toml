@@ -1,0 +1,19 @@
+# Configuração do Air para Go
+root = "." 
+tmp_dir = "tmp"
+build = "go build -o ./tmp/main ."
+cmd = "./tmp/main"
+
+[log]
+time = true
+
+[watcher]
+# Diretórios que serão observados
+include = ["."]
+exclude = ["tmp", "vendor", "node_modules"]
+
+# Extensões de arquivos que irão ativar o reload
+extensions = ["go", "tmpl", "tpl", "html"]
+
+# Ignorar arquivos temporários do Vim ou Emacs
+ignore = [".gitignore", ".git", ".swp", ".swo", ".DS_Store"]

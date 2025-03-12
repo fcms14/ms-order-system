@@ -13,11 +13,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// Nome da Exchange (definida na lib rmq)
-const exchangeName = "order-events-exchange"
+const exchangeName = "order-topic-exchange"
 
 type Log struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	Event     string    `gorm:"type:text;not null"`
 	Message   JSONB     `gorm:"type:jsonb;not null"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
@@ -33,7 +33,7 @@ func main() {
 	pg_user := os.Getenv("POSTGRES_USERNAME")
 	pg_password := os.Getenv("POSTGRES_PASSWORD")
 	pg_name := os.Getenv("ORDER_AUDIT_DATABASE")
-	pg_port := os.Getenv("POSTGRES_PORT")	
+	pg_port := os.Getenv("POSTGRES_PORT")
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo", pg_host, pg_user, pg_password, pg_name, pg_port)
 	fmt.Print(dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -46,6 +46,7 @@ func main() {
 	query := `
 	CREATE TABLE IF NOT EXISTS logs (
 		id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+		event TEXT NOT NULL,
 		message JSONB NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)`
@@ -74,13 +75,13 @@ func main() {
 
 	// Declarando o exchange como 'fanout'
 	err = ch.ExchangeDeclare(
-		"order-events-exchange", // Nome do exchange
-		"fanout",                // Tipo do exchange (fanout)
-		true,                    // Durável (o exchange não será perdido)
-		false,                   // Não exclusivo
-		false,                   // Não auto-deletável
-		false,                   // Não esperar
-		nil,                     // Parâmetros adicionais
+		exchangeName, // Nome da Exchange
+		"topic",      // Tipo
+		true,         // Durável
+		false,        // Auto-delete
+		false,
+		false,
+		nil,
 	)
 	if err != nil {
 		log.Fatal("Falha ao declarar exchange:", err)
@@ -88,24 +89,23 @@ func main() {
 
 	// Declarando a fila
 	q, err := ch.QueueDeclare(
-		"orders.stock", // Nome da fila
-		false,          // Não durável
-		false,          // Não auto-deletável
-		false,          // Não exclusiva
-		false,          // Não esperar
-		nil,            // Sem parâmetros
+		"",    // Nome da fila
+		false, // Não durável
+		false, // Não auto-deletável
+		false, // Não exclusiva
+		false, // Não esperar
+		nil,   // Sem parâmetros
 	)
 	if err != nil {
 		log.Fatal("Falha ao declarar fila:", err)
 	}
 
-	// Vinculando a fila ao exchange (fanout não precisa de routing key)
 	err = ch.QueueBind(
-		q.Name,                  // Nome da fila
-		"",                      // Sem chave de roteamento para 'fanout'
-		"order-events-exchange", // Nome do exchange
-		false,                   // Não esperar
-		nil,                     // Sem parâmetros
+		q.Name,       // Nome da fila
+		"order.#",    // Routing Key vazio para capturar todos os eventos
+		exchangeName, // Nome da Exchange
+		false,
+		nil,
 	)
 	if err != nil {
 		log.Fatal("Falha ao vincular fila ao exchange:", err)
@@ -129,7 +129,8 @@ func main() {
 	// Lê mensagens em uma goroutine
 	go func() {
 		for msg := range msgs {
-			log.Printf("📥 Received a message: %s", msg.Body)
+			event := msg.RoutingKey
+			log.Printf("📥 Event: %s - Received a message: %s", msg.Body, event)
 
 			var jsonData map[string]interface{}
 			if err := json.Unmarshal(msg.Body, &jsonData); err != nil {
@@ -138,6 +139,7 @@ func main() {
 
 			logEntry := Log{
 				Message: jsonData,
+				Event:   event,
 			}
 
 			if err := db.Create(&logEntry).Error; err != nil {
