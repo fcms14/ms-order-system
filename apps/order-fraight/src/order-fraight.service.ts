@@ -10,11 +10,11 @@ export class OrderFraightService {
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_CREATED, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
   handleOrderCreated(data: any) {
-    console.log('🚀 ORDER_CREATED fraight calculate:', data);
+    console.log('🚀 ORDER_CREATED fraight calculate:', JSON.stringify(data));
   }
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_ALLOCATED, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
   handleOrderAllocated(data: any, context: any) {
-    console.log('🚀 ORDER_ALLOCATED example behavior:', data);
+    console.log('🚀 ORDER_ALLOCATED example behavior:', JSON.stringify(data));
   }
 }

@@ -1,19 +1,18 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrderStock } from './entity/order-stock.entity';
-import { MessageHandlerErrorBehavior, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { AmqpConnection, MessageHandlerErrorBehavior, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { ORDER_CREATED, ORDER_EXCHANGE_NAME, ORDER_PAID, ORDER_PAYMENT_FAILED } from '@app/rmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderStockCreate } from './dtos/order-stock-create';
 import { OrderStockUpdate } from './dtos/order-stock-update';
-import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OrderStockService {
   constructor(
     @InjectRepository(OrderStock)
     private orderStockRepository: Repository<OrderStock>,
-    @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly amqpConnection: AmqpConnection,
   ) { }
 
   findOne(id: string): Promise<OrderStock | null> {
@@ -21,7 +20,7 @@ export class OrderStockService {
   }
 
   create(data: OrderStockCreate): Promise<OrderStock> {
-    const response = this.client.send(ORDER_CREATED, { ...data, message: 'Order Stock Created' }).subscribe();
+    this.amqpConnection.publish(ORDER_EXCHANGE_NAME, ORDER_CREATED, { ...data, message: 'Order Stock Created' });
     return this.orderStockRepository.save(data)
   }
 
@@ -37,16 +36,16 @@ export class OrderStockService {
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_CREATED, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
   handleOrderCreated(data: any) {
-    console.log('🛒 ORDER_CREATED reservar estoque:', data);
+    console.log('🛒 ORDER_CREATED reservar estoque:', JSON.stringify(data));
   }
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_PAID, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
   handleOrderPaid(data: any) {
-    console.log('🛒 ORDER_PAID da baixa no estoque', data);
+    console.log('🛒 ORDER_PAID da baixa no estoque', JSON.stringify(data));
   }
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_PAYMENT_FAILED, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
   handleOrderPaymentFailed(data: any) {
-    console.log('🛒 ORDER_PAYMENT_FAILED Libera estoque bloqueado', data);
+    console.log('🛒 ORDER_PAYMENT_FAILED Libera estoque bloqueado', JSON.stringify(data));
   }
 }
