@@ -10,7 +10,8 @@ import { ORDER_EXCHANGE_NAME } from './rmq.events';
       exchanges: [
         {
           name: ORDER_EXCHANGE_NAME,
-          type: 'fanout'
+          type: 'topic',
+          createExchangeIfNotExists: true
         }
       ],
       connectionInitOptions: { wait: false },

@@ -1,5 +1,8 @@
 FROM golang:1.24.1-alpine
 
+# Instala o `air`
+# RUN go install github.com/air-verse/air@latest
+
 WORKDIR /app
 
 COPY . .
@@ -10,4 +13,5 @@ RUN go build -o main .
 
 EXPOSE 8080
 
+# CMD ["air", "-c", ".air.toml"]
 CMD ["./main"]

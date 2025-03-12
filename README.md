@@ -292,7 +292,6 @@ Aqui está a lista de eventos que podem ser emitidos e consumidos pelos microsse
 * **order_payment_pending** - Aguardando confirmação do pagamento.
 * **order_payment_failed** - Falha na validação do pagamento.
 * **order_paid** - Pagamento aprovado, pedido confirmado.
-* **order_failed_payment** - Pagamento rejeitado, estoque será liberado.
 * **order_refunded** - Valor do pagamento estornado.
 * **order_printed** - Pedido impresso para produção.
 * **order_issued** - Nota fiscal emitida com sucesso.
