@@ -17,6 +17,7 @@ const exchangeName = "order-topic-exchange"
 
 type Log struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	Event     string    `gorm:"type:text;not null"`
 	Message   JSONB     `gorm:"type:jsonb;not null"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
@@ -45,6 +46,7 @@ func main() {
 	query := `
 	CREATE TABLE IF NOT EXISTS logs (
 		id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+		event TEXT NOT NULL,
 		message JSONB NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)`
@@ -127,7 +129,8 @@ func main() {
 	// Lê mensagens em uma goroutine
 	go func() {
 		for msg := range msgs {
-			log.Printf("📥 Received a message: %s", msg.Body)
+			event := msg.RoutingKey
+			log.Printf("📥 Event: %s - Received a message: %s", msg.Body, event)
 
 			var jsonData map[string]interface{}
 			if err := json.Unmarshal(msg.Body, &jsonData); err != nil {
@@ -136,6 +139,7 @@ func main() {
 
 			logEntry := Log{
 				Message: jsonData,
+				Event:   event,
 			}
 
 			if err := db.Create(&logEntry).Error; err != nil {
