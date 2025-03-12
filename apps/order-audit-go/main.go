@@ -29,11 +29,12 @@ func (j JSONB) GormDataType() string {
 }
 
 func main() {
+	pg_host := os.Getenv("POSTGRES_HOST")
 	pg_user := os.Getenv("POSTGRES_USERNAME")
 	pg_password := os.Getenv("POSTGRES_PASSWORD")
-	pg_name := os.Getenv("POSTGRES_NAME")
-	pg_port := os.Getenv("POSTGRES_PORT")
-	dsn := fmt.Sprintf("host=postgres user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo", pg_user, pg_password, pg_name, pg_port)
+	pg_name := os.Getenv("ORDER_AUDIT_DATABASE")
+	pg_port := os.Getenv("POSTGRES_PORT")	
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo", pg_host, pg_user, pg_password, pg_name, pg_port)
 	fmt.Print(dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -42,7 +43,6 @@ func main() {
 	}
 
 	//create table test
-
 	query := `
 	CREATE TABLE IF NOT EXISTS logs (
 		id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

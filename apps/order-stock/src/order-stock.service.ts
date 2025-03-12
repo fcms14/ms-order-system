@@ -24,7 +24,6 @@ export class OrderStockService {
 
   create(data: OrderStockCreate): Promise<OrderStock> {
     const response = this.client.send(ORDER_CREATED, { ...data, message: 'Order Stock Created' }).subscribe();
-    console.log(response)
     return this.orderStockRepository.save(data)
   }
 
@@ -35,9 +34,7 @@ export class OrderStockService {
       throw new NotFoundException()
     }
 
-    const found = this.orderStockRepository.findOneBy({ id: data.id });
-    return found
-
+    return await this.orderStockRepository.findOneBy({ id: data.id });
   }
 
   @RabbitSubscribe({ exchange: ORDER_EXCHANGE_NAME, routingKey: ORDER_CREATED, errorBehavior: MessageHandlerErrorBehavior.REQUEUE })
