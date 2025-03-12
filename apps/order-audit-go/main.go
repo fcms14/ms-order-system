@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/streadway/amqp"
@@ -18,7 +19,7 @@ const exchangeName = "order-events-exchange"
 type Log struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 	Message   JSONB     `gorm:"type:jsonb;not null"`
-	CreatedAt int64     `gorm:"autoCreateTime"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
 }
 
 type JSONB map[string]interface{}
@@ -32,7 +33,7 @@ func main() {
 	pg_password := os.Getenv("POSTGRES_PASSWORD")
 	pg_name := os.Getenv("POSTGRES_NAME")
 	pg_port := os.Getenv("POSTGRES_PORT")
-	dsn := fmt.Sprintf("host=localhost user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo", pg_user, pg_password, pg_name, pg_port)
+	dsn := fmt.Sprintf("host=postgres user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Sao_Paulo", pg_user, pg_password, pg_name, pg_port)
 	fmt.Print(dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
@@ -140,7 +141,7 @@ func main() {
 			}
 
 			if err := db.Create(&logEntry).Error; err != nil {
-				log.Fatal("Erro ao inserir log:", err)
+				log.Fatal("Error inserting log:", err)
 			}
 		}
 	}()

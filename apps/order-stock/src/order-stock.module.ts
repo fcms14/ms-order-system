@@ -7,9 +7,23 @@ import { OrderStockService } from './order-stock.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderStock } from './entity/order-stock.entity';
 import { env } from '@app/env';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'RABBITMQ_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://guest:guest@rabbitmq:5672'],
+          queue: 'orders.stock',
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: env.POSTGRES_HOST,
