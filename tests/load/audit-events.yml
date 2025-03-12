@@ -1,0 +1,29 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 50
+  plugins:
+    expect: {}
+    ensure: {}
+    apdex: {}
+    metrics-by-endpoint: {}
+  apdex:
+    threshold: 500
+  ensure:
+    thresholds:
+      - http.response_time.p99: 3200
+      - http.response_time.p95: 2600
+scenarios:
+  - flow:
+    - get:
+        url: "/fraight/test-rmq"
+        capture:
+          - json: "$.message"
+            as: message
+        expect:
+          - contentType: json
+          - hasProperty: message
+          - equals:
+              - "Order event published"
+              - "{{ message }}"

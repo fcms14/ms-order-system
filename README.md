@@ -16,6 +16,7 @@ Este projeto segue uma **arquitetura de microsserviços**, utilizando:
 - [Documentação NestJS Workspaces](https://docs.nestjs.com/cli/monorepo#workspaces)
 - [NestJS Microservices](https://docs.nestjs.com/microservices/basics)
 - [RabbitMQ com NestJS](https://docs.nestjs.com/microservices/rabbitmq)
+- [Artillery](https://www.artillery.io/docs/get-started/get-artillery)
 
 
 ## ⚡ Pré-requisitos
@@ -275,6 +276,14 @@ pnpm run start:all
 ```bash
 curl http://localhost:3000/graphql
 ```
+
+## 🎯 Teste de carga
+
+Para executar o teste de carga execute o comando:
+```bash
+artillery run tests/load/audit-events.yml 
+```
+
 
 #### 🎉🚀 Sua arquitetura NestJS suporta RabbitMQ, TimescaleDB, eventos assíncronos, GraphQL Apollo Federation e TCP! 🎉🚀
 
