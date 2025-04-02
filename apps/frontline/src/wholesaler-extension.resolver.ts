@@ -9,7 +9,6 @@ export class WholesalerExtensionResolver {
 
   @ResolveField('frontlines', () => [Frontline])
   async frontlines(@Parent() wholesaler: Wholesaler): Promise<Frontline[] | null> {
-    // Certifique-se de que o método findByWholesalerId está implementado no FrontlineService
     return this.frontlineService.findByWholesalerId(wholesaler.id);
   }
 }
