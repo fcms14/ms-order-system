@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { RMQModule } from '@app/rmq';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
-import { FrontlineResolver } from './frontline.resolver';
-import { FrontlineService } from './frontline.service';
+import { WholesalerResolver } from './wholesaler.resolver';
+import { WholesalerService } from './wholesaler.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Frontline } from './entity/frontline.entity';
+import { Wholesaler } from './entity/wholesaler.entity';
 import { env } from '@app/env';
-import { Wholesaler } from './dtos/wholesaler-extension';
-import { WholesalerExtensionResolver } from './wholesaler-extension.resolver';
+import { State } from './entity/state.entity';
+import { Region } from './entity/region.entity';
 
 @Module({
   imports: [
@@ -18,22 +18,19 @@ import { WholesalerExtensionResolver } from './wholesaler-extension.resolver';
       port: env.POSTGRES_PORT,
       username: env.POSTGRES_USERNAME,
       password: env.POSTGRES_PASSWORD,
-      database: env.FRONTLINE_DATABASE,
+      database: env.WHOLESALER_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Frontline]),
+    TypeOrmModule.forFeature([Wholesaler, State, Region]),
     RMQModule,
     GraphQLModule.forRoot<ApolloFederationDriverConfig>({
       driver: ApolloFederationDriver,
       autoSchemaFile: {
         federation: 2,
       },
-      buildSchemaOptions: {
-        orphanedTypes: [Wholesaler],
-      },
     }),
   ],
-  providers: [FrontlineResolver, WholesalerExtensionResolver, FrontlineService],
+  providers: [WholesalerResolver, WholesalerService],
 })
-export class FrontlineModule { }
+export class WholesalerModule { }

@@ -24,6 +24,8 @@ import { env } from '@app/env';
         supergraphSdl: new IntrospectAndCompose({
           subgraphs: [
             { name: env.ORDER_STOCK_DATABASE, url: `http://order-stock:${env.ORDER_STOCK_HTTP_PORT}/graphql` },
+            { name: env.FRONTLINE_DATABASE, url: `http://frontline:${env.FRONTLINE_HTTP_PORT}/graphql` },
+            { name: env.WHOLESALER_DATABASE, url: `http://wholesaler:${env.WHOLESALER_HTTP_PORT}/graphql` },
           ],
         }),
       },

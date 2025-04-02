@@ -1,4 +1,3 @@
-
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Directive, Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
@@ -15,9 +14,9 @@ export class Frontline {
   @Column()
   name: string;
 
-  @Field(type => Int, { nullable: false, description: "Wholesaler id" })
+  @Field(type => String, { nullable: false, description: "Wholesaler id" })
   @Column()
-  wholesaler: number;
+  wholesaler: string;
 
   @Field(type => Int, { nullable: false, description: "Package number" })
   @Column({ name: 'package_number' })

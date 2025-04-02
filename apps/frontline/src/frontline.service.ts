@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Frontline } from './entity/frontline.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FrontlineCreate } from './dtos/frontline-create';
 import { FrontlineUpdate } from './dtos/frontline-update';
 
@@ -11,6 +11,14 @@ export class FrontlineService {
     @InjectRepository(Frontline)
     private orderStockRepository: Repository<Frontline>,
   ) { }
+
+  findByWholesalerId(id: string): Promise<Frontline[] | null> {
+    return this.orderStockRepository.find({ where: { wholesaler: id }, });
+  }
+
+  findByWholeSalerIds(ids: string[]): Promise<Frontline[] | null> {
+    return this.orderStockRepository.find({ where: { wholesaler: In(ids) }, });
+  }
 
   findOne(id: string): Promise<Frontline | null> {
     return this.orderStockRepository.findOneBy({ id });

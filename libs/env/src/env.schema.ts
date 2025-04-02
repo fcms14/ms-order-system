@@ -38,8 +38,14 @@ export const envSchema = z.object({
     ORDER_STOCK_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3111)),
     ORDER_TRACKER_HTTP_PORT: z.preprocess((val) => Number(val), z.number().default(3012)),
     ORDER_TRACKER_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3112)),
+    FRONTLINE_HTTP_PORT: z.preprocess((val) => Number(val), z.number().default(3014)),
+    FRONTLINE_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3114)),
+    WHOLESALER_HTTP_PORT: z.preprocess((val) => Number(val), z.number().default(3015)),
+    WHOLESALER_TCP_PORT: z.preprocess((val) => Number(val), z.number().default(3115)),
 
     ORDER_STOCK_DATABASE: z.string().nonempty({ message: 'ORDER_STOCK_DATABASE is required' }),
+    FRONTLINE_DATABASE: z.string().nonempty({ message: 'FRONTLINE_DATABASE is required' }),
+    WHOLESALER_DATABASE: z.string().nonempty({ message: 'WHOLESALER_DATABASE is required' }),
 });
 
 export const env = envSchema.parse(process.env);

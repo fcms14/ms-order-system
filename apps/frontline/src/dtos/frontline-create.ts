@@ -9,10 +9,10 @@ export class FrontlineCreate {
   @IsString()
   name: string;
 
-  @Type(() => Number)
-  @IsInt({ message: "wholesaler should be an integer number" })
-  @Field(() => Int)
-  wholesaler: number;
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  wholesaler: string;
 
   @Type(() => Number)
   @IsInt({ message: "packageNumber should be an integer number" })

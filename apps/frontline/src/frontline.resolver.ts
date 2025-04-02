@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver, ResolveReference, } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver, ResolveReference } from "@nestjs/graphql";
 import { Frontline } from "./entity/frontline.entity";
 import { FrontlineService } from "./frontline.service";
 import { FrontlineCreate } from "./dtos/frontline-create";
@@ -45,10 +45,12 @@ export class FrontlineResolver {
 //   }
 // }
 
+// 595ac049-dcf9-4003-a5de-c4d6636234fc
+
 // mutation {
 //   createFrontline(data: {
 //     name: "Laptop",
-//     wholesaler: 1,
+//     wholesaler: "1",
 //     packageNumber: 1,
 //   }) {
 //     id
