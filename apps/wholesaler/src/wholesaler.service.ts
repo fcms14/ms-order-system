@@ -19,7 +19,7 @@ export class WholesalerService {
   ) { }
 
   findOne(id: string): Promise<Wholesaler | null> {
-    return this.wholesalerRepository.findOneBy({ id });
+    return this.wholesalerRepository.findOne({ where: { id }, relations: ['state', 'state.region'] });
   }
 
   findByRegionName(regionName: string): Promise<Wholesaler[]> {

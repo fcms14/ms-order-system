@@ -20,6 +20,10 @@ export class FrontlineService {
     return this.orderStockRepository.find({ where: { wholesaler: In(ids) }, });
   }
 
+  findAll(): Promise<Frontline[] | null> {
+    return this.orderStockRepository.find();
+  }
+
   findOne(id: string): Promise<Frontline | null> {
     return this.orderStockRepository.findOneBy({ id });
   }

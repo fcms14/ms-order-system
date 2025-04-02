@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Directive, Field, ID, ObjectType } from '@nestjs/graphql';
 import { State } from './state.entity';
 
@@ -16,6 +16,7 @@ export class Wholesaler {
   url: string;
 
   @ManyToOne(() => State, (state) => state.wholesalers)
+  @JoinColumn({ name: 'state_id' })
   @Field(() => State, { nullable: false, description: "State this wholesaler belongs to" })
   state: State;
 

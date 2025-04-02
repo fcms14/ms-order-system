@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Directive, Field, ID, ObjectType } from '@nestjs/graphql';
 import { Region } from './region.entity';
 import { Wholesaler } from './wholesaler.entity';
@@ -17,6 +17,7 @@ export class State {
   name: string;
 
   @ManyToOne(() => Region, (region) => region.states)
+  @JoinColumn({ name: 'region_id' })
   @Field(() => Region, { nullable: false, description: "Region this state belongs to" })
   region: Region;
 

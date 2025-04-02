@@ -9,6 +9,7 @@ import { Frontline } from './entity/frontline.entity';
 import { env } from '@app/env';
 import { Wholesaler } from './dtos/wholesaler-extension';
 import { WholesalerExtensionResolver } from './wholesaler-extension.resolver';
+import { FrontlineController } from './frontline.controller';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { WholesalerExtensionResolver } from './wholesaler-extension.resolver';
       },
     }),
   ],
+  controllers: [FrontlineController],
   providers: [FrontlineResolver, WholesalerExtensionResolver, FrontlineService],
 })
 export class FrontlineModule { }

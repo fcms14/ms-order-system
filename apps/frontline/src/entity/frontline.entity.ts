@@ -15,6 +15,7 @@ export class Frontline {
   name: string;
 
   @Field(type => String, { nullable: false, description: "Wholesaler id" })
+  @Directive('@shareable')
   @Column()
   wholesaler: string;
 
