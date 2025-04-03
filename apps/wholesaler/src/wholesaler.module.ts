@@ -9,6 +9,8 @@ import { Wholesaler } from './entity/wholesaler.entity';
 import { env } from '@app/env';
 import { State } from './entity/state.entity';
 import { Region } from './entity/region.entity';
+import { Frontline } from './object-types/wholesaler-has-frontline';
+import { WholesalerHasFrontlineResolver } from './resolvers/wholesaler-has-frontline.resolver';
 
 @Module({
   imports: [
@@ -30,10 +32,10 @@ import { Region } from './entity/region.entity';
         federation: 2,
       },
       buildSchemaOptions: {
-        orphanedTypes: [],
+        orphanedTypes: [Frontline],
       },
     }),
   ],
-  providers: [WholesalerResolver, WholesalerService],
+  providers: [WholesalerResolver, WholesalerHasFrontlineResolver, WholesalerService],
 })
 export class WholesalerModule { }

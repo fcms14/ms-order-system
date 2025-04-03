@@ -7,6 +7,8 @@ import { FrontlineService } from './frontline.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Frontline } from './entity/frontline.entity';
 import { env } from '@app/env';
+import { Wholesaler } from './object-types/frontline-belongs-to-wholesaler';
+import { FrontlineBelongsToWholesalerResolver } from './resolvers/frontline-belongs-to-wholesaler.resolver';
 
 @Module({
   imports: [
@@ -28,11 +30,11 @@ import { env } from '@app/env';
         federation: 2,
       },
       buildSchemaOptions: {
-        orphanedTypes: [],
+        orphanedTypes: [Wholesaler],
       },
     }),
   ],
   controllers: [],
-  providers: [FrontlineResolver, FrontlineService],
+  providers: [FrontlineResolver, FrontlineBelongsToWholesalerResolver, FrontlineService],
 })
 export class FrontlineModule { }
