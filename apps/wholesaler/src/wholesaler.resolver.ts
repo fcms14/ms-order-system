@@ -30,6 +30,11 @@ export class WholesalerResolver {
     return this.wholesalerService.findByRegionName(regionName);
   }
 
+  @Query(() => [Wholesaler])
+  async getFrontlinesByRegion(@Args('regionName') regionName: string): Promise<Wholesaler[]> {
+    return this.wholesalerService.findByRegionName(regionName);
+  }
+
   @Mutation(() => Wholesaler)
   async createWholesaler(@Args('data') data: WholesalerCreate): Promise<Wholesaler> {
     return await this.wholesalerService.create(data);

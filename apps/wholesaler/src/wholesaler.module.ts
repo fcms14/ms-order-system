@@ -11,6 +11,7 @@ import { State } from './entity/state.entity';
 import { Region } from './entity/region.entity';
 import { Frontline } from './object-types/wholesaler-has-frontline';
 import { WholesalerHasFrontlineResolver } from './resolvers/wholesaler-has-frontline.resolver';
+import { RegionResolver } from './resolvers/region.resolver';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { WholesalerHasFrontlineResolver } from './resolvers/wholesaler-has-front
       },
     }),
   ],
-  providers: [WholesalerResolver, WholesalerHasFrontlineResolver, WholesalerService],
+  providers: [RegionResolver, WholesalerResolver, WholesalerHasFrontlineResolver, WholesalerService],
 })
 export class WholesalerModule { }

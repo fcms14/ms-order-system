@@ -37,6 +37,13 @@ export class WholesalerService {
     });
   }
 
+  findRegionByName(name: string): Promise<Region[]> {
+    return this.regionRepository.find({
+      relations: ['states', 'states.wholesalers'],
+      where: { name: Like(`%${name}%`) },
+    });
+  }
+
   async create(createWholesalerDto: WholesalerCreate): Promise<Wholesaler> {
     const { name, url, stateName, regionName } = createWholesalerDto;
 
