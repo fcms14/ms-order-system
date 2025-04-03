@@ -23,6 +23,7 @@ import { FrontlineByRegion } from './object-types/frontline-by-region';
       database: env.FRONTLINE_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
     TypeOrmModule.forFeature([Frontline]),
     RMQModule,

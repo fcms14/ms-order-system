@@ -25,6 +25,7 @@ import { FrontlineByRegionResolver } from './resolvers/frontline-by-region.resol
       database: env.WHOLESALER_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
     TypeOrmModule.forFeature([Wholesaler, State, Region]),
     RMQModule,

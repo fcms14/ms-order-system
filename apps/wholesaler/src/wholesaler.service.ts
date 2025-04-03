@@ -16,31 +16,41 @@ export class WholesalerService {
   ) { }
 
   find(): Promise<Wholesaler[] | null> {
-    return this.wholesalerRepository.find({ relations: ['state', 'state.region'] });
+    return this.wholesalerRepository.find({
+      relations: ['state', 'state.region'],
+      relationLoadStrategy: 'join',
+    });
   }
 
   findOne(id: string): Promise<Wholesaler | null> {
-    return this.wholesalerRepository.findOne({ where: { id }, relations: ['state', 'state.region'] });
+    return this.wholesalerRepository.findOne({
+      where: { id },
+      relations: ['state', 'state.region'],
+      relationLoadStrategy: 'join',
+    });
   }
 
   findByStateName(stateName: string): Promise<Wholesaler[]> {
     return this.wholesalerRepository.find({
-      relations: ['state', 'state.region'],
       where: { state: { name: Like(`%${stateName}%`) } },
+      relations: ['state', 'state.region'],
+      relationLoadStrategy: 'join',
     });
   }
 
   findByRegionName(regionName: string): Promise<Wholesaler[]> {
     return this.wholesalerRepository.find({
-      relations: ['state', 'state.region'],
       where: { state: { region: { name: Like(`%${regionName}%`) } } },
+      relations: ['state', 'state.region'],
+      relationLoadStrategy: 'join',
     });
   }
 
   findRegionByName(name: string): Promise<Region[]> {
     return this.regionRepository.find({
-      relations: ['states', 'states.wholesalers'],
       where: { name: Like(`%${name}%`) },
+      relations: ['states', 'states.wholesalers'],
+      relationLoadStrategy: 'join',
     });
   }
 
@@ -54,7 +64,11 @@ export class WholesalerService {
       await this.regionRepository.save(region);
     }
 
-    let state = await this.stateRepository.findOne({ where: { name: stateName, region: { id: region.id } }, relations: ['region'] });
+    let state = await this.stateRepository.findOne({
+      where: { name: stateName, region: { id: region.id } },
+      relations: ['region'],
+      relationLoadStrategy: 'join',
+    });
 
     if (!state) {
       state = this.stateRepository.create({ name: stateName, region });
