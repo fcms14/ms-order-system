@@ -9,6 +9,8 @@ import { Frontline } from './entity/frontline.entity';
 import { env } from '@app/env';
 import { Wholesaler } from './object-types/frontline-belongs-to-wholesaler';
 import { FrontlineBelongsToWholesalerResolver } from './resolvers/frontline-belongs-to-wholesaler.resolver';
+import { FrontlineBelongsToRegionResolver } from './resolvers/frontline-belongs-to-region.resolver';
+import { Region } from './object-types/frontline-belongs-to-region';
 
 @Module({
   imports: [
@@ -30,11 +32,11 @@ import { FrontlineBelongsToWholesalerResolver } from './resolvers/frontline-belo
         federation: 2,
       },
       buildSchemaOptions: {
-        orphanedTypes: [Wholesaler],
+        orphanedTypes: [Wholesaler, Region],
       },
     }),
   ],
   controllers: [],
-  providers: [FrontlineResolver, FrontlineBelongsToWholesalerResolver, FrontlineService],
+  providers: [FrontlineResolver, FrontlineBelongsToRegionResolver, FrontlineBelongsToWholesalerResolver, FrontlineService],
 })
 export class FrontlineModule { }
