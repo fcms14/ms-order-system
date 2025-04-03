@@ -3,13 +3,12 @@ import { Wholesaler } from '../entity/wholesaler.entity';
 import { State } from '../entity/state.entity';
 import { Region } from '../entity/region.entity';
 
-
 @ObjectType()
 export class AggregatedFrontline {
   @Field(type => ID, { nullable: false, description: "Frontline Id" })
   id: string;
 
-  @Field(() => String, { nullable: false, description: 'Frontline name' })
+  @Field(() => String, { nullable: false, description: "Frontline name" })
   name: string;
 
   @Field(type => Int, { nullable: false, description: "Frontline package number" })

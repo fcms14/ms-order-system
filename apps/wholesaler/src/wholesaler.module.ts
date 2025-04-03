@@ -12,6 +12,7 @@ import { Region } from './entity/region.entity';
 import { FrontlineExtensionResolver } from './frontline-extension.resolver';
 import { Frontline } from './dtos/frontline-extension';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { WholesalerHasFrontlineResolver } from './wholesaler-has-frontline.resolver';
 
 @Module({
   imports: [
@@ -44,6 +45,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     }),
   ],
-  providers: [WholesalerResolver, FrontlineExtensionResolver, WholesalerService],
+  providers: [WholesalerResolver, WholesalerHasFrontlineResolver, FrontlineExtensionResolver, WholesalerService],
 })
 export class WholesalerModule { }

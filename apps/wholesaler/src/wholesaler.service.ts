@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Wholesaler } from './entity/wholesaler.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { WholesalerCreate } from './dtos/wholesaler-create';
 import { WholesalerUpdate } from './dtos/wholesaler-update';
 import { State } from './entity/state.entity';
@@ -22,13 +22,24 @@ export class WholesalerService {
     return this.wholesalerRepository.findOne({ where: { id }, relations: ['state', 'state.region'] });
   }
 
+  findByStateName(stateName: string): Promise<Wholesaler[]> {
+    return this.wholesalerRepository.find({
+      relations: ['state', 'state.region'],
+      where: {
+        state: {
+          name: Like(`%${stateName}%`),
+        },
+      },
+    });
+  }
+
   findByRegionName(regionName: string): Promise<Wholesaler[]> {
     return this.wholesalerRepository.find({
       relations: ['state', 'state.region'],
       where: {
         state: {
           region: {
-            name: regionName,
+            name: Like(`%${regionName}%`),
           },
         },
       },

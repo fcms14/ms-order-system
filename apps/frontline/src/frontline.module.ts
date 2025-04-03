@@ -10,6 +10,8 @@ import { env } from '@app/env';
 import { Wholesaler } from './dtos/wholesaler-extension';
 import { WholesalerExtensionResolver } from './wholesaler-extension.resolver';
 import { FrontlineController } from './frontline.controller';
+import { WholesalerHasFrontlineResolver } from './wholesaler-has-frontline.resolver';
+import { WholesalerHasFrontline } from './dtos/wholesaler-has-frontline';
 
 @Module({
   imports: [
@@ -31,11 +33,11 @@ import { FrontlineController } from './frontline.controller';
         federation: 2,
       },
       buildSchemaOptions: {
-        orphanedTypes: [Wholesaler],
+        orphanedTypes: [Wholesaler, WholesalerHasFrontline],
       },
     }),
   ],
   controllers: [FrontlineController],
-  providers: [FrontlineResolver, WholesalerExtensionResolver, FrontlineService],
+  providers: [FrontlineResolver, WholesalerHasFrontlineResolver, WholesalerExtensionResolver, FrontlineService],
 })
 export class FrontlineModule { }
