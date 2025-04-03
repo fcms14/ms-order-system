@@ -49,7 +49,7 @@ export class FrontlineResolver {
 
 // mutation {
 //   createFrontline(data: {
-//     name: "Laptop",
+//     name: "Bar 1",
 //     wholesaler: "1",
 //     packageNumber: 1,
 //   }) {

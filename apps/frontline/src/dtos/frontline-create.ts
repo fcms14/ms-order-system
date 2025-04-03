@@ -12,7 +12,7 @@ export class FrontlineCreate {
   @Field()
   @IsNotEmpty()
   @IsString()
-  wholesaler: string;
+  wholesalerId: string;
 
   @Type(() => Number)
   @IsInt({ message: "packageNumber should be an integer number" })

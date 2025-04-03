@@ -10,13 +10,14 @@ import { Region } from './entity/region.entity';
 @Injectable()
 export class WholesalerService {
   constructor(
-    @InjectRepository(Wholesaler)
-    private wholesalerRepository: Repository<Wholesaler>,
-    @InjectRepository(State)
-    private stateRepository: Repository<State>,
-    @InjectRepository(Region)
-    private regionRepository: Repository<Region>,
+    @InjectRepository(Wholesaler) private wholesalerRepository: Repository<Wholesaler>,
+    @InjectRepository(State) private stateRepository: Repository<State>,
+    @InjectRepository(Region) private regionRepository: Repository<Region>,
   ) { }
+
+  find(): Promise<Wholesaler[] | null> {
+    return this.wholesalerRepository.find({ relations: ['state', 'state.region'] });
+  }
 
   findOne(id: string): Promise<Wholesaler | null> {
     return this.wholesalerRepository.findOne({ where: { id }, relations: ['state', 'state.region'] });
@@ -25,29 +26,19 @@ export class WholesalerService {
   findByStateName(stateName: string): Promise<Wholesaler[]> {
     return this.wholesalerRepository.find({
       relations: ['state', 'state.region'],
-      where: {
-        state: {
-          name: Like(`%${stateName}%`),
-        },
-      },
+      where: { state: { name: Like(`%${stateName}%`) } },
     });
   }
 
   findByRegionName(regionName: string): Promise<Wholesaler[]> {
     return this.wholesalerRepository.find({
       relations: ['state', 'state.region'],
-      where: {
-        state: {
-          region: {
-            name: Like(`%${regionName}%`),
-          },
-        },
-      },
+      where: { state: { region: { name: Like(`%${regionName}%`) } } },
     });
   }
 
   async create(createWholesalerDto: WholesalerCreate): Promise<Wholesaler> {
-    const { url, stateName, regionName } = createWholesalerDto;
+    const { name, url, stateName, regionName } = createWholesalerDto;
 
     let region = await this.regionRepository.findOne({ where: { name: regionName } });
 
@@ -63,7 +54,7 @@ export class WholesalerService {
       await this.stateRepository.save(state);
     }
 
-    const wholesaler = this.wholesalerRepository.create({ url, state });
+    const wholesaler = this.wholesalerRepository.create({ name, url, state });
     await this.wholesalerRepository.save(wholesaler);
 
     return wholesaler;

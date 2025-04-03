@@ -6,6 +6,11 @@ export class WholesalerCreate {
   @Field()
   @IsNotEmpty()
   @IsString()
+  name: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
   url: string;
   
   @Field(() => String)

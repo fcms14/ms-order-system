@@ -13,11 +13,11 @@ export class FrontlineService {
   ) { }
 
   findByWholesalerId(id: string): Promise<Frontline[] | null> {
-    return this.orderStockRepository.find({ where: { wholesaler: id }, });
+    return this.orderStockRepository.find({ where: { wholesalerId: id }, });
   }
 
   findByWholeSalerIds(ids: string[]): Promise<Frontline[] | null> {
-    return this.orderStockRepository.find({ where: { wholesaler: In(ids) }, });
+    return this.orderStockRepository.find({ where: { wholesalerId: In(ids) }, });
   }
 
   findAll(): Promise<Frontline[] | null> {

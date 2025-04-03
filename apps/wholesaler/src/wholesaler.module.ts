@@ -9,10 +9,6 @@ import { Wholesaler } from './entity/wholesaler.entity';
 import { env } from '@app/env';
 import { State } from './entity/state.entity';
 import { Region } from './entity/region.entity';
-import { FrontlineExtensionResolver } from './frontline-extension.resolver';
-import { Frontline } from './dtos/frontline-extension';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { WholesalerHasFrontlineResolver } from './wholesaler-has-frontline.resolver';
 
 @Module({
   imports: [
@@ -28,23 +24,16 @@ import { WholesalerHasFrontlineResolver } from './wholesaler-has-frontline.resol
     }),
     TypeOrmModule.forFeature([Wholesaler, State, Region]),
     RMQModule,
-    ClientsModule.register([
-      {
-        name: 'FRONTLINE_SERVICE',
-        transport: Transport.TCP,
-        options: { host: 'frontline', port: env.FRONTLINE_TCP_PORT },
-      },
-    ]),
     GraphQLModule.forRoot<ApolloFederationDriverConfig>({
       driver: ApolloFederationDriver,
       autoSchemaFile: {
         federation: 2,
       },
       buildSchemaOptions: {
-        orphanedTypes: [Frontline],
+        orphanedTypes: [],
       },
     }),
   ],
-  providers: [WholesalerResolver, WholesalerHasFrontlineResolver, FrontlineExtensionResolver, WholesalerService],
+  providers: [WholesalerResolver, WholesalerService],
 })
 export class WholesalerModule { }
