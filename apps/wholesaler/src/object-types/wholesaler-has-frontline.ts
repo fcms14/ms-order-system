@@ -1,6 +1,5 @@
-import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
+import { ObjectType, Field, Directive } from '@nestjs/graphql';
 import { Wholesaler } from '../entity/wholesaler.entity';
-
 
 @ObjectType()
 @Directive('@extends')
