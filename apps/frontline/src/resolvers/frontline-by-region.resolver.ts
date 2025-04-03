@@ -11,8 +11,6 @@ export class FrontlineByRegionResolver {
   async frontlines(@Parent() { wholesalerIds }: FrontlineByRegion): Promise<Frontline[] | null> {
     if (!wholesalerIds) return [];
 
-    const x = await this.frontlineService.findByWholeSalerIds(wholesalerIds);
-    console.log(wholesalerIds, x)
-    return x
+    return await this.frontlineService.findByWholeSalerIds(wholesalerIds);
   }
 }
